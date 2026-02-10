@@ -1,4 +1,6 @@
-# Post-Review Checklist for Editor and Authors
+INCORPORATE SOME OF THESE AS AUTOMATIC BOT QUESTIONS
+
+# Post-Review Checklist for Neurodesk Core Team and Authors
 
 ## Additional Author Tasks After Review is Complete
 - [ ] Double check authors and affiliations (including ORCIDs)
@@ -7,7 +9,7 @@
 - [ ] Make sure that the title and author list (including ORCIDs) in the archive match those in the JOSE paper.
 - [ ] Make sure that the license listed for the archive is the same as the software license.
 
-## Editor Tasks Prior to Acceptance
+## Neurodesk Core Team Tasks Prior to Merge in NeurodeskEDU
 - [ ] Read the text of the paper and offer comments/corrections (as either a list or a PR)
 - [ ] Check the references in the paper for corrections (e.g. capitalization)
 - [ ] Check that the archive title, author list, version tag, and the license are correct
