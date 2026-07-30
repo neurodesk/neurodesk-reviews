@@ -1,0 +1,48 @@
+# TEMPORARY diagnostic — delete after use.
+# Maps what the NEURODESKEDU_DISPATCH_TOKEN secret can actually do.
+# Uses a throwaway event_type no workflow listens for, so nothing is triggered.
+
+name: TEMP token probe
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe token capabilities
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.NEURODESKEDU_DISPATCH_TOKEN }}
+          script: |
+            async function probe(label, fn) {
+              try {
+                await fn();
+                core.info(`PASS   ${label}`);
+              } catch (e) {
+                core.info(`FAIL   ${label}  ->  HTTP ${e.status}  ${e.message}`);
+              }
+            }
+
+            // 1. Who does this token belong to? (proves it authenticates at all)
+            try {
+              const me = await github.rest.users.getAuthenticated();
+              core.info(`IDENTITY  token belongs to: ${me.data.login} (type ${me.data.type})`);
+            } catch (e) {
+              core.info(`IDENTITY  FAILED -> HTTP ${e.status} ${e.message}`);
+            }
+
+            // 2. Can it write to its OWN repo? (same Contents:write permission)
+            await probe('dispatch -> neurodesk/neurodeskedu-reviews (own repo)', () =>
+              github.rest.repos.createDispatchEvent({
+                owner: 'neurodesk', repo: 'neurodeskedu-reviews',
+                event_type: 'probe-ignore-me',
+              }));
+
+            // 3. Can it write to the TARGET repo? (the call that is failing)
+            await probe('dispatch -> neurodesk/neurodeskedu (target)', () =>
+              github.rest.repos.createDispatchEvent({
+                owner: 'neurodesk', repo: 'neurodeskedu',
+                event_type: 'probe-ignore-me',
+              }));
